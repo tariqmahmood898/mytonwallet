@@ -1,0 +1,60 @@
+@use "../scssVariables" as v;
+
+@mixin _separator-base($position-offset, $inset: null) {
+  content: '';
+
+  position: absolute;
+  left: 0;
+
+  width: 100%;
+  height: 0.0625rem;
+
+  box-shadow: $inset 0 $position-offset 0 0 var(--color-separator);
+}
+
+@mixin separator() {
+  &:not(:first-child)::before {
+    @include _separator-base(-0.03rem);
+
+    top: 0;
+  }
+}
+
+@mixin separatorBottom() {
+  &::after {
+    @include _separator-base(0.03rem, inset);
+
+    bottom: 0;
+  }
+}
+
+@mixin separatorBottomSettings($left-offset: 0, $right-offset: 0) {
+  &:not(:last-child):not(:has(+ :global(.collapsible:not(.open))))::after {
+    content: '';
+
+    position: absolute;
+    right: $right-offset;
+    bottom: 0;
+    left: $left-offset;
+
+    height: 0.0625rem;
+
+    box-shadow: inset 0 -0.03rem 0 0 var(--color-separator);
+  }
+}
+
+// See $byChain for the available $variables map keys
+
+@mixin byChain() {
+  @each $chain, $variables in v.$byChain {
+    @content($chain, $variables);
+  }
+}
+
+@mixin byChainClass() {
+  @include byChain() using ($chain, $variables) {
+    &.#{$chain} {
+      @content($variables);
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "originHash" : "bfd064120e13e0415424e4327a4065f5d920b0bc319174aef4b945b2ccfe7cc5",
+  "pins" : [
+    {
+      "identity" : "grdb.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/groue/GRDB.swift",
+      "state" : {
+        "revision" : "a5a1be26b4513dc7ec360eb56bc08a345bac6649",
+        "version" : "7.5.0"
+      }
+    },
+    {
+      "identity" : "lottie-spm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/airbnb/lottie-spm.git",
+      "state" : {
+        "revision" : "8c6edf4f0fa84fe9c058600a4295eb0c01661c69",
+        "version" : "4.5.1"
+      }
+    },
+    {
+      "identity" : "popovers",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/nikstar/Popovers",
+      "state" : {
+        "branch" : "main",
+        "revision" : "ca0b09f9ffdbf2a7fc5e0c572596f8770b8bcf70"
+      }
+    }
+  ],
+  "version" : 3
+}
