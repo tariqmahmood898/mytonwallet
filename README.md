@@ -9,8 +9,6 @@ The wallet is **self-custodial and safe**. The developers **do not** have access
 - [Requirements](#requirements)
 - [Local Setup](#local-setup)
 - [Dev Mode](#dev-mode)
-- [Linux](#linux-desktop-troubleshooting)
-- [Electron](./docs/electron.md)
 - [Verifying GPG Signatures](./docs/gpg-check.md)
 - [Support Us](#support-us)
 
@@ -63,6 +61,6 @@ cd udev-rules
 sudo bash ./add_udev_rules.sh
 ```
 
-## Support Us
+## 🖥️ Support Us
 
 If you like what we do, feel free to contribute by creating a pull request, or just support us using this TON wallet: `EQAIsixsrb93f9kDyplo_bK5OdgW5r0WCcIJZdGOUG1B282S`. We appreciate it a lot!
