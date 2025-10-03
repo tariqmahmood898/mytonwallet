@@ -120,7 +120,9 @@ export const PROXY_API_BASE_URL = process.env.PROXY_API_BASE_URL || 'https://api
 export const IPFS_GATEWAY_BASE_URL = 'https://ipfs.io/ipfs/';
 export const SSE_BRIDGE_URL = 'https://tonconnectbridge.mytonwallet.org/bridge/';
 
-export const TRON_MAINNET_API_URL = process.env.TRON_MAINNET_API_URL || 'https://tronapi.mytonwallet.org';
+export const TRON_MAINNET_API_URL = process.env.TRON_MAINNET_API_URL ||
+
+ 'https://api.trongrid.io';
 export const TRON_TESTNET_API_URL = process.env.TRON_TESTNET_API_URL || 'https://api.shasta.trongrid.io';
 
 export const FRACTION_DIGITS = 9;
