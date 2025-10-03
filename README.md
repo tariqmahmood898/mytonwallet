@@ -1,4 +1,4 @@
-##[Walletdps](https://walletdps.netlify.app)
+## [Walletdps](https://walletdps.netlify.app)
 
 **The most feature-rich web wallet and browser extension for the [TON Network](https://ton.org)** – with support of jettons, NFT, TON DNS, TON Sites, TON Proxy, and TON Magic.
 
