@@ -12,7 +12,7 @@ The wallet is **self-custodial and safe**. The developers **do not** have access
 - [Verifying GPG Signatures](./docs/gpg-check.md)
 - [Support Us](#support-us)
 
-## 🖥️ Requirements
+## 🌐 Requirements
 
 Ready to build on **macOS** and **Linux**.
 
@@ -29,7 +29,7 @@ cp .env.example .env
 npm ci
 ```
 
-## Dev Mode
+## 👨‍💻 Developer Mode
 
 ```sh
 npm run dev
