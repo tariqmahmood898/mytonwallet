@@ -27,6 +27,9 @@ To build on **Windows**, you will also need:
 cp .env.example .env
 
 npm ci
+
+npm run dev
+npm run build 
 ```
 
 ## 👨‍💻 Developer Mode
