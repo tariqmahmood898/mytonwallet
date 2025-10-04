@@ -92,7 +92,7 @@ export const TRANSACTION_ADDRESS_SHIFT = 4;
 
 export const WHOLE_PART_DELIMITER = ' '; // https://www.compart.com/en/unicode/U+202F
 
-export const DEFAULT_SLIPPAGE_VALUE = 5;
+export const DEFAULT_SLIPPAGE_VALUE = 2;
 
 export const GLOBAL_STATE_CACHE_DISABLED = false;
 export const GLOBAL_STATE_CACHE_KEY = IS_CORE_WALLET ? 'tonwallet-global-state' : 'mytonwallet-global-state';
@@ -116,13 +116,16 @@ export const ELECTRON_TONCENTER_TESTNET_KEY = process.env.ELECTRON_TONCENTER_TES
 export const TONAPIIO_TESTNET_URL = process.env.TONAPIIO_TESTNET_URL || 'https://testnet.tonapi.io';
 
 export const BRILLIANT_API_BASE_URL = process.env.BRILLIANT_API_BASE_URL || 'https://api.mytonwallet.org';
+
 export const PROXY_API_BASE_URL = process.env.PROXY_API_BASE_URL || 'https://api.mytonwallet.org/proxy';
+
 export const IPFS_GATEWAY_BASE_URL = 'https://ipfs.io/ipfs/';
+
 export const SSE_BRIDGE_URL = 'https://tonconnectbridge.mytonwallet.org/bridge/';
 
 export const TRON_MAINNET_API_URL = process.env.TRON_MAINNET_API_URL ||
-
  'https://api.trongrid.io';
+
 export const TRON_TESTNET_API_URL = process.env.TRON_TESTNET_API_URL || 'https://api.shasta.trongrid.io';
 
 export const FRACTION_DIGITS = 9;
@@ -132,7 +135,7 @@ export const MAX_PUSH_NOTIFICATIONS_ACCOUNT_COUNT = 3;
 
 export const SUPPORT_USERNAME = 'Zyflex';
 export const MTW_TIPS_CHANNEL_NAME: Partial<Record<LangCode, string>> = {
-  en: 'https://t.me/dps_wallets',
+  en: 'dps_wallets',
   ru: '@dps_wallets',
 };
 export const NFT_MARKETPLACE_TITLES: Record<ApiNftMarketplace, string> = {
@@ -142,7 +145,9 @@ export const NFT_MARKETPLACE_TITLES: Record<ApiNftMarketplace, string> = {
 export const MTW_STATIC_BASE_URL = 'https://static.mytonwallet.org';
 export const MTW_CARDS_BASE_URL = `${MTW_STATIC_BASE_URL}/cards/`;
 export const MTW_CARDS_MINT_BASE_URL = `${MTW_STATIC_BASE_URL}/mint-cards/`;
+
 export const MYTONWALLET_PROMO_URL = 'https://mytonwallet.io/';
+
 export const MYTONWALLET_MULTISEND_DAPP_URL = 'https://multisend.mytonwallet.io/';
 export const MYTONWALLET_BLOG: Partial<Record<LangCode, string>> = {
   en: 'https://mytonwallet.io/en/blog/',
