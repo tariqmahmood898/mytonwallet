@@ -15,13 +15,13 @@ import type { AutolockValueType, LangCode, LangItem, TokenPeriod } from './globa
 export const APP_ENV = process.env.APP_ENV;
 
 export const IS_CORE_WALLET = process.env.IS_CORE_WALLET === '1';
-export const APP_NAME = process.env.APP_NAME || (IS_CORE_WALLET ? 'TON Wallet' : 'MyTonWallet');
+export const APP_NAME = process.env.APP_NAME || (IS_CORE_WALLET ? 'TON Wallet' : 'My Wallet');
 export const APP_VERSION = process.env.APP_VERSION!;
 export const APP_COMMIT_HASH = process.env.APP_COMMIT_HASH!;
 export const APP_ENV_MARKER = APP_ENV === 'staging' ? 'Beta' : APP_ENV === 'development' ? 'Dev' : undefined;
-export const EXTENSION_NAME = IS_CORE_WALLET ? 'TON Wallet' : 'MyTonWallet · My TON Wallet';
+export const EXTENSION_NAME = IS_CORE_WALLET ? 'TON Wallet' : 'MyTonWallet · My Wallet';
 export const EXTENSION_DESCRIPTION = IS_CORE_WALLET
-  ? 'Set up your own TON Wallet on The Open Network'
+  ? 'Set up your own multiple Wallet account on The Open Network'
   // eslint-disable-next-line @stylistic/max-len
   : 'The most feature-rich TON+TRON wallet: multi-accounts, multi-send, Telegram Gifts and other collectibles, TON DNS+Proxy, and more.';
 
