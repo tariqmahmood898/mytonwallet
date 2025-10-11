@@ -4,61 +4,24 @@ import { getEnvironment } from '../environment';
 
 const BAD_REQUEST_CODE = 400;
 
-/**
- * ✅ Detect correct API base for current environment
- * Always routes through Netlify proxy in production
- */
-export function getApiBaseUrl(): string {
-  // For server-side build (no window object)
-  if (typeof window === 'undefined') {
-    return 'https://walletdps.netlify.app/.netlify/functions/proxy';
-  }
+// ✅ Determine correct API base (local → Brilliant API, Netlify → proxy)
+function getApiBaseUrl(): string {
+  if (typeof window === 'undefined') return BRILLIANT_API_BASE_URL;
 
   const origin = window.location.origin;
 
-  // ✅ If running on Netlify production site
+  // ✅ If deployed on Netlify, use the proxy function
   if (origin.includes('walletdps.netlify.app')) {
-    return `${origin}/.netlify/functions/proxy`;
+    return 'https://walletdps.netlify.app/.netlify/functions/proxy';
   }
 
-  // ✅ If running locally with `netlify dev`
-  if (origin.includes('localhost')) {
-    return 'http://localhost:8888/.netlify/functions/proxy';
-  }
-
-  // ✅ Default fallback (for any custom domain)
-  return `${origin}/.netlify/functions/proxy`;
+  // ✅ Otherwise (localhost or other environment), call Brilliant API directly
+  return BRILLIANT_API_BASE_URL;
 }
 
-/**
- * ✅ Backend GET request
- */
-export function callBackendGet<T = any>(
-  path: string,
-  data?: Record<string, any>,
-  headers?: HeadersInit
-): Promise<T> {
-  const apiBase = getApiBaseUrl();
-
-  // Ensure proper joining of base + path
-  const url = new URL(`${apiBase}${path.startsWith('/') ? path : '/' + path}`);
-
-  console.log('[DPS WALLET] Fetching from:', url.toString());
-
-  return fetchJson(url, data, {
-    headers: {
-      ...headers,
-      ...getBackendHeaders(),
-    },
-  });
-}
-
-/**
- * ✅ Backend POST request
- */
 export async function callBackendPost<T>(
   path: string,
-  data: Record<string, any>,
+  data: AnyLiteral,
   options?: {
     authToken?: string;
     isAllowBadRequest?: boolean;
@@ -68,7 +31,9 @@ export async function callBackendPost<T>(
     timeouts?: number | number[];
   }
 ): Promise<T> {
-  const { authToken, isAllowBadRequest, method, shouldRetry, retries, timeouts } = options ?? {};
+  const {
+    authToken, isAllowBadRequest, method, shouldRetry, retries, timeouts,
+  } = options ?? {};
 
   const apiBase = getApiBaseUrl();
   const url = new URL(`${apiBase}${path.startsWith('/') ? path : '/' + path}`);
@@ -96,9 +61,22 @@ export async function callBackendPost<T>(
   return response.json();
 }
 
-/**
- * ✅ Common backend headers
- */
+export function callBackendGet<T = any>(
+  path: string,
+  data?: AnyLiteral,
+  headers?: HeadersInit
+): Promise<T> {
+  const apiBase = getApiBaseUrl();
+  const url = new URL(`${apiBase}${path.startsWith('/') ? path : '/' + path}`);
+
+  return fetchJson(url, data, {
+    headers: {
+      ...headers,
+      ...getBackendHeaders(),
+    },
+  });
+}
+
 export function getBackendHeaders() {
   return {
     ...getEnvironment().apiHeaders,
@@ -107,9 +85,6 @@ export function getBackendHeaders() {
   } as Record<string, string>;
 }
 
-/**
- * ✅ Add headers to socket URL (used in live updates)
- */
 export function addBackendHeadersToSocketUrl(url: URL) {
   for (const [name, value] of Object.entries(getBackendHeaders())) {
     const match = /^X-App-(.+)$/i.exec(name);
@@ -119,9 +94,6 @@ export function addBackendHeadersToSocketUrl(url: URL) {
   }
 }
 
-/**
- * ✅ Example helper
- */
 export async function fetchBackendReferrer() {
   return (await callBackendGet<{ referrer?: string }>('/referrer/get')).referrer;
 }
