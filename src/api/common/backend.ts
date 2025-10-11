@@ -5,33 +5,56 @@ import { getEnvironment } from '../environment';
 const BAD_REQUEST_CODE = 400;
 
 /**
- * ✅ Automatically detect whether to use the Netlify serverless proxy or direct API.
- * Handles local dev, Netlify build, and production correctly.
+ * ✅ Detect correct API base for current environment
+ * Always routes through Netlify proxy in production
  */
 export function getApiBaseUrl(): string {
-  // For build-time or Node environment (no window)
+  // For server-side build (no window object)
   if (typeof window === 'undefined') {
-    return process.env.BRILLIANT_API_BASE_URL || '/.netlify/functions/proxy';
+    return 'https://walletdps.netlify.app/.netlify/functions/proxy';
   }
 
   const origin = window.location.origin;
 
-  // ✅ On Netlify live site or preview
+  // ✅ If running on Netlify production site
   if (origin.includes('walletdps.netlify.app')) {
-    return '/.netlify/functions/proxy';
+    return `${origin}/.netlify/functions/proxy`;
   }
 
-  // ✅ On localhost (for `netlify dev`)
+  // ✅ If running locally with `netlify dev`
   if (origin.includes('localhost')) {
     return 'http://localhost:8888/.netlify/functions/proxy';
   }
 
-  // ✅ Default fallback for other custom domains
-  return '/.netlify/functions/proxy';
+  // ✅ Default fallback (for any custom domain)
+  return `${origin}/.netlify/functions/proxy`;
 }
 
 /**
- * POST request to backend (or serverless proxy)
+ * ✅ Backend GET request
+ */
+export function callBackendGet<T = any>(
+  path: string,
+  data?: Record<string, any>,
+  headers?: HeadersInit
+): Promise<T> {
+  const apiBase = getApiBaseUrl();
+
+  // Ensure proper joining of base + path
+  const url = new URL(`${apiBase}${path.startsWith('/') ? path : '/' + path}`);
+
+  console.log('[DPS WALLET] Fetching from:', url.toString());
+
+  return fetchJson(url, data, {
+    headers: {
+      ...headers,
+      ...getBackendHeaders(),
+    },
+  });
+}
+
+/**
+ * ✅ Backend POST request
  */
 export async function callBackendPost<T>(
   path: string,
@@ -45,9 +68,7 @@ export async function callBackendPost<T>(
     timeouts?: number | number[];
   }
 ): Promise<T> {
-  const {
-    authToken, isAllowBadRequest, method, shouldRetry, retries, timeouts,
-  } = options ?? {};
+  const { authToken, isAllowBadRequest, method, shouldRetry, retries, timeouts } = options ?? {};
 
   const apiBase = getApiBaseUrl();
   const url = new URL(`${apiBase}${path.startsWith('/') ? path : '/' + path}`);
@@ -76,26 +97,7 @@ export async function callBackendPost<T>(
 }
 
 /**
- * GET request to backend (or serverless proxy)
- */
-export function callBackendGet<T = any>(
-  path: string,
-  data?: Record<string, any>,
-  headers?: HeadersInit
-): Promise<T> {
-  const apiBase = getApiBaseUrl();
-  const url = new URL(`${apiBase}${path.startsWith('/') ? path : '/' + path}`);
-
-  return fetchJson(url, data, {
-    headers: {
-      ...headers,
-      ...getBackendHeaders(),
-    },
-  });
-}
-
-/**
- * Add common backend headers
+ * ✅ Common backend headers
  */
 export function getBackendHeaders() {
   return {
@@ -106,7 +108,7 @@ export function getBackendHeaders() {
 }
 
 /**
- * Append backend headers to WebSocket URLs
+ * ✅ Add headers to socket URL (used in live updates)
  */
 export function addBackendHeadersToSocketUrl(url: URL) {
   for (const [name, value] of Object.entries(getBackendHeaders())) {
@@ -118,7 +120,7 @@ export function addBackendHeadersToSocketUrl(url: URL) {
 }
 
 /**
- * Example referrer fetch helper
+ * ✅ Example helper
  */
 export async function fetchBackendReferrer() {
   return (await callBackendGet<{ referrer?: string }>('/referrer/get')).referrer;
