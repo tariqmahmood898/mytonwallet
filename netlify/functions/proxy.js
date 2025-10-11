@@ -2,32 +2,37 @@
 import fetch from 'node-fetch';
 
 export async function handler(event) {
+  const { path, queryStringParameters, httpMethod, body } = event;
+
+  // اصل Brilliant API URL
+  const targetBase = "https://api.mytonwallet.org"; // ← یہ وہ URL ہے جو آپ bypass کرنا چاہتے ہیں
+  const targetUrl = `${targetBase}${path.replace('/.netlify/functions/proxy', '')}`;
+
+  const options = {
+    method: httpMethod,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(event.headers || {}),
+    },
+    body: httpMethod !== 'GET' && body ? body : undefined,
+  };
+
   try {
-    // dynamic path capture
-    const path = event.path.replace('/.netlify/functions/proxy', '');
-    const targetUrl = `https://api.mytonwallet.org${path}`;
-
-    const resp = await fetch(targetUrl, {
-      method: event.httpMethod,
-      headers: { Accept: 'application/json' },
-    });
-
-    const text = await resp.text();
+    const response = await fetch(targetUrl, options);
+    const data = await response.text();
 
     return {
-      statusCode: resp.status,
+      statusCode: response.status,
       headers: {
+        'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
       },
-      body: text,
+      body: data,
     };
-  } catch (err) {
-    console.error('Proxy error:', err);
+  } catch (error) {
     return {
       statusCode: 500,
-      headers: { 'Access-Control-Allow-Origin': '*' },
-      body: JSON.stringify({ error: 'Proxy failed' }),
+      body: JSON.stringify({ error: error.message }),
     };
   }
 }
