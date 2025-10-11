@@ -1,42 +1,26 @@
-import { APP_ENV, APP_VERSION, BRILLIANT_API_BASE_URL } from '../../config';
+import { APP_ENV, APP_VERSION } from '../../config';
 import { fetchJson, fetchWithRetry, handleFetchErrors } from '../../util/fetch';
 import { getEnvironment } from '../environment';
 
 const BAD_REQUEST_CODE = 400;
 
-// ✅ Determine correct API base (local → Brilliant API, Netlify → proxy)
-function getApiBaseUrl(): string {
-  if (typeof window === 'undefined') return BRILLIANT_API_BASE_URL;
+// ⚡ Netlify Function Proxy Base URL
+const PROXY_BASE_URL = '/.netlify/functions/proxy';
 
-  const origin = window.location.origin;
-
-  // ✅ If deployed on Netlify, use the proxy function
-  if (origin.includes('walletdps.netlify.app')) {
-    return 'https://walletdps.netlify.app/.netlify/functions/proxy';
-  }
-
-  // ✅ Otherwise (localhost or other environment), call Brilliant API directly
-  return BRILLIANT_API_BASE_URL;
-}
-
-export async function callBackendPost<T>(
-  path: string,
-  data: AnyLiteral,
-  options?: {
-    authToken?: string;
-    isAllowBadRequest?: boolean;
-    method?: string;
-    shouldRetry?: boolean;
-    retries?: number;
-    timeouts?: number | number[];
-  }
-): Promise<T> {
+export async function callBackendPost<T>(path: string, data: AnyLiteral, options?: {
+  authToken?: string;
+  isAllowBadRequest?: boolean;
+  method?: string;
+  shouldRetry?: boolean;
+  retries?: number;
+  timeouts?: number | number[];
+}): Promise<T> {
   const {
     authToken, isAllowBadRequest, method, shouldRetry, retries, timeouts,
   } = options ?? {};
 
-  const apiBase = getApiBaseUrl();
-  const url = new URL(`${apiBase}${path.startsWith('/') ? path : '/' + path}`);
+  // ✅ یہاں Brilliant API کی جگہ Proxy Base URL استعمال کیا جا رہا ہے
+  const url = new URL(`${PROXY_BASE_URL}${path}`);
 
   const init: RequestInit = {
     method: method ?? 'POST',
@@ -50,10 +34,10 @@ export async function callBackendPost<T>(
 
   const response = shouldRetry
     ? await fetchWithRetry(url, init, {
-        retries,
-        timeouts,
-        shouldSkipRetryFn: (message) => !message?.includes('signal is aborted'),
-      })
+      retries,
+      timeouts,
+      shouldSkipRetryFn: (message) => !message?.includes('signal is aborted'),
+    })
     : await fetch(url.toString(), init);
 
   await handleFetchErrors(response, isAllowBadRequest ? [BAD_REQUEST_CODE] : undefined);
@@ -61,13 +45,8 @@ export async function callBackendPost<T>(
   return response.json();
 }
 
-export function callBackendGet<T = any>(
-  path: string,
-  data?: AnyLiteral,
-  headers?: HeadersInit
-): Promise<T> {
-  const apiBase = getApiBaseUrl();
-  const url = new URL(`${apiBase}${path.startsWith('/') ? path : '/' + path}`);
+export function callBackendGet<T = any>(path: string, data?: AnyLiteral, headers?: HeadersInit): Promise<T> {
+  const url = new URL(`${PROXY_BASE_URL}${path}`);
 
   return fetchJson(url, data, {
     headers: {
